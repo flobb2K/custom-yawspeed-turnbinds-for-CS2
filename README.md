@@ -41,7 +41,8 @@ Using this config allows the user to change pitchspeed by typing **cl_pitchspeed
 - 3 different sounds
 
 ### full readability
-Every single config file has a header explaining it's use. I'm not keeping any secrets here. Also I tried my best making this easy to read and understand.
+Every single config file has a header explaining it's use. I'm not keeping any secrets here.  
+Also I tried my best making this easy to read and understand.
 
 ### full customization
 In the included `turnbinds\settings.cfg` file I have given many customizations options together with explanations and examples on how to make this **your very own** config.  
@@ -64,7 +65,7 @@ If you've tinkered with Counter-Strike configs before and want to add more featu
 ## The drawback to using this instead of external turnbinds
 Since cl_yawspeed/cl_pitchspeed don't actually exist as convars ingame this config "emulates" those by modifying the turnleft/turnright and turnup/turndown commands respectively.  
 The negative effect this has is that you can't modify the turnspeed while it's active. That means for the turnspeed change to take effect you need to briefly stop turning and start turning again.  
-Obviously this also means you can setup bindtoggle binds like you could in CSS. Instead I used a slightly different method for the binds.
+Obviously this also means you can't setup bindtoggle binds like you could in CSS. Instead I used a slightly different method for the binds.
 
 ### Special Thanks to INSPECTRO from Cybershoke for helping me figure this stuff out.
 <img width="4100" height="475" alt="banner_shoke_anthrazit" src="https://github.com/user-attachments/assets/01df9424-7de2-40b0-8295-f4221597aebe" />
