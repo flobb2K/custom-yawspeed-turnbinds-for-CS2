@@ -10,27 +10,35 @@ It has one singular drawback compared to external stuff which im going to explai
 
 ## Features:
 
-### cl_yawspeed:
+### cl_yawspeed
 Using this config allows the user to change yawspeed by typing **cl_yawspeed_[number] into console**.
 >[!NOTE]
 >300 is the maximum/default yawspeed value. 1 is the mininum value.
 
 `cl_yawspeed_[300-1]`
 
-### cl_pitchspeed:
+### cl_pitchspeed
 Using this config allows the user to change pitchspeed by typing **cl_pitchspeed_[number] into console**.
 >[!NOTE]
 >45 is the maximum/default pitchspeed value. 1 is the mininum value.
 
 `cl_pitchspeed_[45-1]`
 
-### several ways to create binds that allow you to change yawspeed during gameplay:
-- **fixed** binds
-- cycle key (2, 3 or 4 different yawspeed settings using **one single key**)
-- fixed binds + cycle key (allowing the fixed binds to also cycle the cycle key)
-- "speed key" (changes yawspeed **while held down**, reverts to a set default value **if let go**)
+### fixed binds
+Simply bind as many keys as you want to different cl_yawspeed commands.
 
-### visual feedback:
+`bind "[key]" "cl_yawspeed_[number]"`
+
+### cycle keys
+**Cycle between** two, three or four different yawspeed settings using **one single key**.
+As an added bonus you can **pair the cycle key with fixed binds** that also influence the cycle alias.
+Also there's an option to **automatically reset** the cycle alias when you **reset your stage/run**.
+
+### "speed key" 
+This type of bind can change between two different yawspeeds. One of them is active while the "speed key" is **not being pressed**.
+The other setting will activate while **holding down** the "speed key".
+
+### visual feedback
 - **hud color** change
 - **crosshair color** change
 - **both hud and crosshair color** change
@@ -65,7 +73,6 @@ If you've tinkered with Counter-Strike configs before and want to add more featu
 ## The drawback to using this instead of external turnbinds
 Since cl_yawspeed/cl_pitchspeed don't actually exist as convars ingame this config "emulates" those by modifying the turnleft/turnright and turnup/turndown commands respectively.  
 The negative effect this has is that you can't modify the turnspeed while it's active. That means for the turnspeed change to take effect you need to briefly stop turning and start turning again.  
-Obviously this also means you can't setup bindtoggle binds like you could in CSS. Instead I used a slightly different method for the binds.
 
 ### Special Thanks to INSPECTRO from Cybershoke for helping me figure this stuff out.
 <img width="4100" height="475" alt="banner_shoke_anthrazit" src="https://github.com/user-attachments/assets/01df9424-7de2-40b0-8295-f4221597aebe" />
