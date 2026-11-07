@@ -32,14 +32,17 @@ Using this config allows the user to change pitchspeed by typing **cl_pitchspeed
 `cl_pitchspeed_[45-1]`
 
 ### fixed binds
-Simply bind as many keys as you want to different cl_yawspeed commands.
+Simply bind as many keys as you want to different cl_yawspeed/cl_pitchspeed commands.
 
 `bind "[key]" "cl_yawspeed_[value]"`
 
+`bind "[key]" "cl_pitchspeed_[value]"`
+
 ### cycle keys
-**Cycle between** two, three or four different yawspeed settings using **one single key**.
-As an added bonus you can **pair the cycle key with fixed binds** that also influence the cycle alias.
-Also there's an option to **automatically reset** the cycle alias when you **reset your stage/run**.
+**Cycle between** two, three or four different yawspeed settings using **one single key**.    
+**Cycle between** two or three different pitchspeed settings using **one single key**.  
+As an added bonus you can **pair the cycle keys with fixed binds** that also influence the cycle alias.  
+Also there's an option to **automatically reset** the yawspeed cycle alias when you **reset your stage/run**.
 
 ### "speed key" 
 This type of bind can change between two different yawspeeds. One of them is active while the "speed key" is **not being pressed**.
@@ -65,7 +68,7 @@ If you've tinkered with Counter-Strike configs before and want to add more featu
 
 ## How to use:
 
-1. Download the `.zip` file containing the config files.
+1. Download the `.zip` file containing the config files. (right side under "releases")
 2. Extract all files from the `.zip` archive.
 3. Move folder called `turnbinds` including all of its contents to  
    `[Drive]:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo\cfg`
