@@ -1,24 +1,31 @@
-# flobb-s-turnbinds
-# Turnbind config for Counter-Strike 2/Counter-Strike: Global Offensive
+# flobb's turnbinds
+# versatile turnbinds with customizable turnspeeds for CS2 
 
-This config uses a workaround to add the legacy convars cl_yawspeed and cl_pitchspeed from Counter-Strike: Source  
-back into Counter-Strike 2 using only console commands **like in the good ol' days**.  
-In my opinion this can be better than most external turnbind programs because of the extra features/customization options.  
+This config uses a workaround to add the legacy convars **cl_yawspeed** and **cl_pitchspeed** from Counter-Strike: Source  
+back into Counter-Strike 2 using **only console commands** like in the good ol' days.   
+In my opinion using this is better than using external turnbind programs for these reasons:
+- far more options to create binds
+- visual feedback
+- audio feedback
+- as easy to use as external software
+- ability to change settings ingame using developer console
+
+
 It has one singular drawback compared to external stuff which im going to explain at the end.
 >[!NOTE]
->Most of this should also work for Counter-Strike: Global Offensive.
+>Basically all of this should also work for Counter-Strike: Global Offensive.
 
 ## Features:
 
 ### cl_yawspeed
-Using this config allows the user to change yawspeed by typing **cl_yawspeed_[number] into console**.
+Using this config allows the user to change yawspeed by typing **cl_yawspeed_[value] into console**.
 >[!NOTE]
 >300 is the maximum/default yawspeed value. 1 is the mininum value.
 
 `cl_yawspeed_[300-1]`
 
 ### cl_pitchspeed
-Using this config allows the user to change pitchspeed by typing **cl_pitchspeed_[number] into console**.
+Using this config allows the user to change pitchspeed by typing **cl_pitchspeed_[value] into console**.
 >[!NOTE]
 >45 is the maximum/default pitchspeed value. 1 is the mininum value.
 
@@ -27,7 +34,7 @@ Using this config allows the user to change pitchspeed by typing **cl_pitchspeed
 ### fixed binds
 Simply bind as many keys as you want to different cl_yawspeed commands.
 
-`bind "[key]" "cl_yawspeed_[number]"`
+`bind "[key]" "cl_yawspeed_[value]"`
 
 ### cycle keys
 **Cycle between** two, three or four different yawspeed settings using **one single key**.
