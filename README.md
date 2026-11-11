@@ -2,7 +2,7 @@
 # versatile turnbinds with customizable turnspeeds for CS2 
 
 This config uses a workaround to add the legacy convars **cl_yawspeed** and **cl_pitchspeed** from Counter-Strike: Source  
-back into Counter-Strike 2 using **only console commands** like in the good ol' days.   
+back into Counter-Strike 2 using **only console commands**, like in the good ol' days.   
 In my opinion using this is better than using external turnbind programs for these reasons:
 - far more options to create binds
 - visual feedback
@@ -11,42 +11,43 @@ In my opinion using this is better than using external turnbind programs for the
 - ability to change settings ingame using developer console
 
 
-It has one singular drawback compared to external stuff which im going to explain at the end.
+It has one singular drawback compared to external stuff, which I am going to explain at the end.
 >[!NOTE]
 >Basically all of this should also work for Counter-Strike: Global Offensive.
 
 ## Features:
 
 ### cl_yawspeed
-Using this config allows the user to change yawspeed by typing **cl_yawspeed_[value] into console**.
+Using this config allows the user to change yawspeed by typing **cl_yawspeed_[value] into the developer console**.
 >[!NOTE]
->300 is the maximum/default yawspeed value. 1 is the mininum value.
+>300 is the maximum/default cl_yawspeed value. 1 is the mininum value.
 
 `cl_yawspeed_[300-1]`
 
 ### cl_pitchspeed
-Using this config allows the user to change pitchspeed by typing **cl_pitchspeed_[value] into console**.
+Using this config allows the user to change pitchspeed by typing **cl_pitchspeed_[value] into the developer console**.
 >[!NOTE]
->45 is the maximum/default pitchspeed value. 1 is the mininum value.
+>45 is the maximum/default cl_pitchspeed value. 1 is the mininum value.
 
 `cl_pitchspeed_[45-1]`
 
-### fixed binds
+### fixed cl_yawspeed/cl_pitchspeed binds
 Simply bind as many keys as you want to different cl_yawspeed/cl_pitchspeed commands.
 
 `bind "[key]" "cl_yawspeed_[value]"`
 
 `bind "[key]" "cl_pitchspeed_[value]"`
 
-### cycle keys
-**Cycle between** two, three or four different yawspeed settings using **one single key**.    
-**Cycle between** two or three different pitchspeed settings using **one single key**.  
-As an added bonus you can **pair the cycle keys with fixed binds** that also influence the cycle alias.  
-Also there's an option to **automatically reset** the yawspeed cycle alias when you **reset your stage/run**.
+### toggle/cycle cl_yawspeed/cl_pitchspeed binds
+**Cycle between** two, three or four different cl_yawspeed settings using **one single key**.    
+**Cycle between** two or three different cl_pitchspeed settings using **one single key**.  
+As an added bonus, you can **pair the toggle/cycle keys together with fixed binds** that also influence the cycle alias.  
+Also there's an option to **automatically reset** the cl_yawspeed cycle alias when you **reset your stage/run**.
 
-### "speed key" 
-This type of bind can change between two different yawspeeds. One of them is active while the "speed key" is **not being pressed**.
-The other setting will activate while **holding down** the "speed key".
+### hold-to-activate cl_yawspeed binds
+**Hold-to-activate binds** need to be actively held down to change the cl_yawspeed setting.  
+**Not pressing/letting go** of any of these binds **will result in a customizable default cl_yawspeed setting** being activated.  
+This config supports up to three hold-to-activate binds, resulting in four different speed settings using them.
 
 ### visual feedback
 - **hud color** change
@@ -56,7 +57,7 @@ The other setting will activate while **holding down** the "speed key".
 
 ### audio feedback
 - **add sounds** to the binds
-- 3 different sounds
+- 21 different sounds
 
 ### full readability
 Every single config file has a header explaining it's use. I'm not keeping any secrets here.  
