@@ -1,5 +1,5 @@
 # flobb's turnbinds
-# versatile turnbinds with customizable turnspeeds for CS2 
+# Turnbinds with customizable turnspeeds for CS2/CSGO
 
 This config uses a workaround to add the legacy convars **cl_yawspeed** and **cl_pitchspeed** from Counter-Strike: Source  
 back into Counter-Strike 2 using **only console commands**, like in the good ol' days.   
