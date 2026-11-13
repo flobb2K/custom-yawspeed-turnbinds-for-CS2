@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>flobb's turnbinds</title>
+  <meta name="description" content="The first and so far only source on the internet proving customizable turnbinds are possible in Counter-Strike 2 without using external software.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23101410'/%3E%3Cpath d='M16 4v24M4 16h24' stroke='%23d6ef4a' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%23d6ef4a' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Rajdhani:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ************************************************************
+       HIER BEARBEITEN: Farben der Seite.
+       --gold ist auch die Rahmenfarbe der Sprachflaggen.
+       ************************************************************ */
+    :root {
+      --bg: #101410;
+      --surface: #182118;
+      --surface-2: #121a12;
+      --line: #31402e;
+      --text: #e7efe3;
+      --muted: #a9b8a6;
+      --lime: #d6ef4a;
+      --gold: #f2c14e;
+      --coral: #e07a5f;
+      --blue: #8ec8e6;
+      --shadow: 0 16px 40px rgba(0, 0, 0, .28);
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Source Sans 3", "Segoe UI", sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      background:
+        radial-gradient(900px 420px at 8% -10%, rgba(214, 239, 74, .14), transparent 55%),
+        var(--bg);
+    }
+
+    a { color: var(--lime); }
+    a:hover { color: #f4ffc8; }
+
+    code {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: .86em;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: .05em .35em;
+    }
+
+    pre {
+      overflow-x: auto;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    pre code { border: 0; background: transparent; padding: 0; }
+
+    ins { text-decoration-color: var(--lime); text-underline-offset: 3px; }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0 72px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Rajdhani, "Arial Narrow", sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      line-height: .95;
+      letter-spacing: .01em;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--lime);
+      font-family: Rajdhani, "Arial Narrow", sans-serif;
+      font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+      font-weight: 600;
+      line-height: 1.15;
+    }
+
+    /* Flaggen: gleicher unsichtbarer Rahmen, damit nichts springt.
+       Aktiv und Hover benutzen dieselbe Goldfarbe. */
+    .lang-switch {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .flag-btn {
+      position: relative;
+      display: block;
+      padding: 3px;
+      line-height: 0;
+      border: 2px solid transparent;
+      border-radius: 5px;
+      background: transparent;
+      cursor: pointer;
+      transition: border-color .12s linear;
+    }
+
+    .flag-btn svg {
+      display: block;
+      width: 36px;
+      height: 24px;
+      border-radius: 2px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28);
+    }
+
+    .flag-btn.is-active,
+    .flag-btn:not(.is-active):hover,
+    .flag-btn:not(.is-active):focus-visible {
+      border-color: var(--gold);
+    }
+
+    .flag-btn:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(240px, .78fr);
+      gap: 28px;
+      align-items: start;
+      margin-top: 28px;
+    }
+
+    .about {
+      margin: 0 0 14px;
+      color: #f4f7f1;
+      font-size: 1.14rem;
+      line-height: 1.45;
+    }
+
+    .intro-copy p { margin: 0 0 12px; color: #d5e0d1; }
+    .intro-copy ul, .intro-copy ol { margin: 0 0 12px; padding-left: 1.2rem; color: #d5e0d1; }
+
+    .intro-media {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #0c120c;
+    }
+
+    .preview-art, .intro-media img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .live {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 12px;
+      margin-top: 22px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .stat {
+      flex: 1 0 210px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 84px;
+      padding: 12px 14px;
+      text-decoration: none;
+      color: inherit;
+      background: rgba(24, 33, 24, .92);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    a.stat:hover { border-color: var(--lime); }
+
+    .stat-k {
+      color: var(--muted);
+      font-family: Rajdhani, "Arial Narrow", sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .stat strong,
+    .stat time {
+      font-family: Rajdhani, "Arial Narrow", sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .branch-list { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .branch-list a {
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: .75rem;
+    }
+
+    .branch-list a:hover { border-color: var(--lime); color: var(--lime); }
+
+    .readme-section { margin-top: 46px; }
+
+    .readme-section > h2,
+    .extra-block > h2 {
+      margin: 0 0 14px;
+      font-family: Rajdhani, "Arial Narrow", sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.1rem);
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      padding: 16px 16px 12px;
+      background: linear-gradient(180deg, rgba(28, 40, 27, .95), rgba(16, 22, 16, .95));
+      border: 1px solid var(--line);
+      border-top: 3px solid var(--accent, var(--lime));
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .card:nth-child(3n + 1) { --accent: var(--lime); }
+    .card:nth-child(3n + 2) { --accent: #7ee0c0; }
+    .card:nth-child(3n) { --accent: var(--gold); }
+
+    .card h3, .compare-col h3, .extra-block h3 {
+      margin: 0 0 8px;
+      color: var(--accent, var(--lime));
+      font-family: Rajdhani, "Arial Narrow", sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .card p, .compare-col p, .extra-block p { margin: 0 0 10px; }
+    .card ul, .compare-col ul, .extra-block ul { margin: 0 0 10px; padding-left: 1.15rem; }
+    .card li + li, .compare-col li + li { margin-top: 4px; }
+
+    .steps { list-style: none; margin: 0; padding: 0; }
+
+    .steps li {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      margin: 0 0 12px;
+    }
+
+    .step-n {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--lime);
+      color: #17200c;
+      font-family: Rajdhani, sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .steps li div { padding-top: 4px; overflow-wrap: anywhere; }
+
+    .shot, .banner { margin: 16px 0; }
+    .shot img, .banner img { width: 100%; height: auto; border-radius: 12px; }
+    .shot img { border: 1px solid var(--line); }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .compare-col {
+      padding: 16px 16px 8px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .compare-col.is-pro { --accent: var(--lime); border-top: 3px solid var(--lime); }
+    .compare-col.is-con { --accent: var(--coral); border-top: 3px solid var(--coral); }
+
+    .soon { list-style: none; margin: 0; padding: 0; }
+
+    .soon li {
+      position: relative;
+      margin: 0 0 8px;
+      padding: 10px 12px 10px 36px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .soon li::before {
+      content: "▸";
+      position: absolute;
+      left: 14px;
+      color: var(--lime);
+    }
+
+    .alert {
+      margin: 10px 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
+
+    .alert p { margin: 0; }
+    .alert-k {
+      margin: 0 0 4px;
+      font-family: Rajdhani, sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .alert-important { background: #2a2412; border: 1px solid var(--gold); }
+    .alert-important .alert-k { color: var(--gold); }
+    .alert-warning { background: #2c1814; border: 1px solid var(--coral); }
+    .alert-warning .alert-k { color: #ffb5a3; }
+    .alert-note, .alert-tip { background: #142028; border: 1px solid var(--blue); }
+    .alert-note .alert-k, .alert-tip .alert-k { color: var(--blue); }
+    .alert-caution { background: #2a2412; border: 1px solid var(--gold); }
+
+    .load-error {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border: 1px solid var(--coral);
+      border-radius: 12px;
+      background: #2a1614;
+    }
+
+    .load-error p { margin: 0 0 8px; }
+    .load-error p:last-child { margin-bottom: 0; }
+
+    .structure-note {
+      margin: 0 0 16px;
+      padding: 10px 12px;
+      border: 1px solid var(--gold);
+      border-radius: 10px;
+      color: #f6e7c0;
+      background: #2a2412;
+    }
+
+    .loading { color: var(--muted); }
+
+    blockquote {
+      margin: 10px 0;
+      padding-left: 12px;
+      border-left: 3px solid var(--line);
+      color: var(--muted);
+    }
+
+    @media (max-width: 800px) {
+      .intro-grid, .compare { grid-template-columns: 1fr; }
+      .title-row { align-items: flex-start; }
+    }
+
+    @media (max-width: 560px) {
+      .title-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <!--
+    ============================================================
+    KURZANLEITUNG (diese Kommentare sieht man im Seitenquelltext)
+
+    Diese eine Datei ist die GitHub Page. Texte der README werden
+    NICHT hier reinkopiert. Die Seite holt sie beim Öffnen live
+    von GitHub. Die englische README bleibt dadurch 1:1 die Datei
+    im Branch "main".
+
+    So kommt die Seite online:
+    1. index.html in das Repository legen.
+       Entweder in den Root von "main" oder in einen Ordner /docs.
+    2. Auf GitHub: Settings → Pages → Branch wählen
+       (main, Ordner /root oder /docs) → Save.
+    3. Die Sprach-Branches "german" und "russian" brauchen diese
+       HTML-Datei nicht. Dort liegt später nur eine eigene README.md.
+       Diese Seite liest sie von hier aus.
+
+    Direkt als Datei öffnen (Doppelklick, Adresse beginnt mit file://)
+    funktioniert nicht: der Browser blockiert dann das Laden von GitHub.
+    Lokal testen: im Ordner dieser Datei "python -m http.server" starten
+    und http://localhost:8000 öffnen.
+
+    Was du später hier selbst änderst, ist mit "HIER BEARBEITEN" markiert.
+    Alles andere pflegst du in der README.md des jeweiligen Branches.
+    ============================================================
+  -->
+
+  <div class="wrap">
+    <header>
+      <div class="title-row">
+        <!-- Beide Überschriften kommen aus den ersten zwei "#"-Zeilen der README. -->
+        <h1 id="page-title">flobb's turnbinds</h1>
+
+        <!--
+          HIER BEARBEITEN: nur, wenn du eine Flagge tauschen willst.
+          Die Zuordnung Flagge → Branch steht weiter unten in CONFIG.languages,
+          nicht in diesen Buttons. data-lang muss zu CONFIG.languages passen
+          (en, de, ru). Reihenfolge von links nach rechts: Englisch, Deutsch, Russisch.
+        -->
+        <div class="lang-switch" id="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="flag-btn is-active" data-lang="en" aria-pressed="true" title="English">
+            <svg viewBox="0 0 60 30" aria-hidden="true">
+              <clipPath id="uk-clip"><rect width="60" height="30"></rect></clipPath>
+              <g clip-path="url(#uk-clip)">
+                <rect width="60" height="30" fill="#012169"></rect>
+                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="10"></path>
+                <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="6"></path>
+                <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="16"></path>
+                <path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="10"></path>
+              </g>
+            </svg>
+            <span class="visually-hidden">English</span>
+          </button>
+          <button type="button" class="flag-btn" data-lang="de" aria-pressed="false" title="Deutsch">
+            <svg viewBox="0 0 5 3" aria-hidden="true">
+              <rect width="5" height="1" fill="#000"></rect>
+              <rect width="5" height="1" y="1" fill="#DD0000"></rect>
+              <rect width="5" height="1" y="2" fill="#FFCE00"></rect>
+            </svg>
+            <span class="visually-hidden">Deutsch</span>
+          </button>
+          <button type="button" class="flag-btn" data-lang="ru" aria-pressed="false" title="Русский">
+            <svg viewBox="0 0 3 2" aria-hidden="true">
+              <rect width="3" height="2" fill="#fff"></rect>
+              <rect width="3" y=".667" height="1.333" fill="#0039A6"></rect>
+              <rect width="3" y="1.333" height=".667" fill="#D52B1E"></rect>
+            </svg>
+            <span class="visually-hidden">Русский</span>
+          </button>
+        </div>
+      </div>
+      <h2 class="subtitle" id="page-subtitle">Turnbinds with customizable turnspeeds for CS2/CSGO</h2>
+    </header>
+
+    <div class="intro-grid">
+      <div class="intro-copy">
+        <!-- About-Text: fest in dieser Datei, siehe ABOUT weiter unten. Nicht aus der README. -->
+        <p id="about" class="about"></p>
+        <!-- Einleitungstext: die Absätze der README vor der ersten "##"-Überschrift. -->
+        <div id="intro"></div>
+      </div>
+
+      <!--
+        ************************************************************
+        HIER BEARBEITEN: Platzhalterbild.
+        Ersetze das komplette <svg class="preview-art">...</svg>
+        durch ein Bild, zum Beispiel:
+
+          <img class="preview-art" src="turnbinds-preview.gif" alt="Turnbinds Vorschau">
+
+        Die GIF-Datei muss dann neben index.html im Repository liegen
+        (oder src ist eine volle https-Adresse).
+        ************************************************************
+      -->
+      <aside class="intro-media" id="preview-slot">
+        <svg class="preview-art" viewBox="0 0 640 480" role="img" aria-label="Turnbind preview placeholder">
+          <rect width="640" height="480" fill="#0c120c"></rect>
+          <g stroke="#223022" stroke-width="1">
+            <path d="M40 40 H600 V440 H40 Z" fill="none"></path>
+            <path d="M40 80 H80 M560 80 H600 M40 400 H80 M560 400 H600" stroke="#d6ef4a" stroke-width="3"></path>
+          </g>
+          <circle cx="320" cy="230" r="150" fill="none" stroke="#1d2a1c" stroke-width="18"></circle>
+          <path d="M180 250 A 150 150 0 0 1 470 190" fill="none" stroke="#d6ef4a" stroke-width="4"></path>
+          <path d="M470 190 l-22 4 l8 18" fill="none" stroke="#d6ef4a" stroke-width="4" stroke-linejoin="round"></path>
+          <path d="M320 230 m-70 0 a70 70 0 1 0 140 0 a70 70 0 1 0 -140 0" fill="none" stroke="#f2c14e" stroke-width="2"></path>
+          <path d="M320 150 V310 M240 230 H400" stroke="#e7efe3" stroke-width="2"></path>
+          <circle cx="320" cy="230" r="4" fill="#d6ef4a"></circle>
+          <text x="48" y="430" fill="#d6ef4a" font-family="ui-monospace, monospace" font-size="22">cl_yawspeed_210</text>
+          <text x="360" y="430" fill="#f2c14e" font-family="ui-monospace, monospace" font-size="22">cl_pitchspeed_20</text>
+        </svg>
+      </aside>
+    </div>
+
+    <div id="readme-error" class="load-error" hidden></div>
+
+    <!--
+      Live-Zeile. Die Zahlen kommen von der GitHub-API, die Beschriftung
+      aus UI weiter unten (Sterne, Branches, Release, Änderungsdatum).
+    -->
+    <section class="live" id="live" aria-busy="true">
+      <a class="stat" id="stat-stars" href="https://github.com/flobb2K/custom-turnbinds-config/stargazers">
+        <span class="stat-k" id="label-stars">Stars</span>
+        <strong id="stars-value">…</strong>
+      </a>
+      <div class="stat">
+        <span class="stat-k" id="label-branches">Branches</span>
+        <div class="branch-list" id="branch-list">…</div>
+      </div>
+      <a class="stat" id="stat-release" href="https://github.com/flobb2K/custom-turnbinds-config/releases">
+        <span class="stat-k" id="label-release">Latest release</span>
+        <strong id="release-value">…</strong>
+      </a>
+      <a class="stat" id="stat-updated" href="https://github.com/flobb2K/custom-turnbinds-config/commits/main">
+        <span class="stat-k" id="label-updated">Last change</span>
+        <time id="updated-value">…</time>
+      </a>
+    </section>
+
+    <!--
+      ============================================================
+      AB HIER KOMMT DER INHALT AUS DER README.md
+
+      Die Seite zählt die Überschriften der Ebene 2 (Zeilen mit "##"),
+      nicht den englischen Wortlaut. Dadurch funktioniert dieselbe
+      Anordnung auch in der deutschen und russischen README.
+
+      Pflicht-Reihenfolge in JEDER Sprach-README:
+        1. erste ##   → Kärtchen (jedes ### darunter wird ein Kärtchen)
+        2. zweite ##  → Schrittreihenfolge (nummerierte Liste + Bild)
+        3. dritte ##  → Vergleich nebeneinander (erstes ### links, zweites ### rechts)
+        4. vierte ##  → Cybershoke-Abschnitt
+        5. fünfte ##  → Coming Soon
+      Alles nach der fünften ##-Überschrift wird darunter angehängt,
+      damit spätere Abschnitte nicht verschwinden.
+
+      Die erste und zweite "#"-Zeile (Ebene 1) sind Seitentitel
+      und Untertitel. Der Text dazwischen und vor der ersten "##"
+      ist der Einleitungstext rechts vom Platzhalterbild.
+
+      Überschriften, Bilder, Listen und Hinweise ([!NOTE], [!IMPORTANT],
+      [!WARNING]) werden mit ausgegeben. Du änderst sie in der README,
+      nicht hier.
+      ============================================================
+    -->
+    <p id="structure-note" class="structure-note" hidden></p>
+    <section class="readme-section" id="features" hidden></section>
+    <section class="readme-section" id="howto" hidden></section>
+    <section class="readme-section" id="compare" hidden></section>
+    <section class="readme-section" id="thanks" hidden></section>
+    <section class="readme-section" id="soon" hidden></section>
+    <div id="extra"></div>
+  </div>
+
+  <noscript>
+    <p class="wrap">JavaScript wird gebraucht, um die README von GitHub zu laden. This page needs JavaScript to load the README from GitHub.</p>
+  </noscript>
+
+  <script>
+    /* ************************************************************
+       HIER BEARBEITEN: Repository und Sprach-Branches.
+       branch ist der Git-Branch, dessen README.md geladen wird.
+       Englisch = main. Deutsch = german. Russisch = russian.
+       ************************************************************ */
+    const CONFIG = {
+      owner: "flobb2K",
+      repo: "custom-turnbinds-config",
+      languages: {
+        en: { branch: "main", label: "English" },
+        de: { branch: "german", label: "Deutsch" },
+        ru: { branch: "russian", label: "Русский" }
+      }
+    };
+
+    /* ************************************************************
+       HIER BEARBEITEN: About-Text.
+       Der steht absichtlich fest in dieser Datei, weil die
+       Repository-Beschreibung nicht aus der README kommt.
+       Englisch ist der Originalsatz und darf 1:1 so bleiben.
+       ************************************************************ */
+    const ABOUT = {
+      en: "The first and so far only source on the internet proving customizable turnbinds are possible in Counter-Strike 2 without using external software.",
+      de: "Die erste und bisher einzige Quelle im Internet, die beweist, dass anpassbare Turnbinds in Counter-Strike 2 ohne externe Software möglich sind.",
+      ru: "Первый и пока единственный источник в интернете, доказывающий, что настраиваемые turnbinds в Counter-Strike 2 возможны без внешнего программного обеспечения."
+    };
+
+    /* ************************************************************
+       HIER BEARBEITEN: Beschriftungen, die nicht in der README stehen
+       (Live-Zeile, Ladehinweis, Namen der GitHub-Hinweise).
+       ************************************************************ */
+    const UI = {
+      en: {
+        stars: "Stars",
+        branches: "Branches",
+        release: "Latest release",
+        updated: "Last change",
+        noRelease: "No release yet",
+        loading: "Loading the README…",
+        statsError: "Repository stats could not be loaded.",
+        language: "Language",
+        locale: "en-GB",
+        alert: { NOTE: "Note", IMPORTANT: "Important", WARNING: "Warning", TIP: "Tip", CAUTION: "Caution" },
+        structure: (branch, count) => `The README.md in branch "${branch}" has ${count} level-2 headings. This page expects five, in this order: features, how to use, the comparison, Cybershoke, Coming Soon. Later blocks stay empty until those headings exist.`
+      },
+      de: {
+        stars: "Sterne",
+        branches: "Branches",
+        release: "Letzter Release",
+        updated: "Letzte Änderung",
+        noRelease: "Noch kein Release",
+        loading: "README wird geladen…",
+        statsError: "Die Repository-Daten konnten nicht geladen werden.",
+        language: "Sprache",
+        locale: "de-DE",
+        alert: { NOTE: "Hinweis", IMPORTANT: "Wichtig", WARNING: "Warnung", TIP: "Tipp", CAUTION: "Vorsicht" },
+        structure: (branch, count) => `Die README.md im Branch „${branch}“ hat ${count} Überschriften der Ebene 2. Diese Seite erwartet fünf, in dieser Reihenfolge: Features, Anleitung, Vergleich, Cybershoke, Coming Soon. Die späteren Blöcke bleiben leer, bis diese Überschriften existieren.`
+      },
+      ru: {
+        stars: "Звёзды",
+        branches: "Ветки",
+        release: "Последний релиз",
+        updated: "Последнее изменение",
+        noRelease: "Релизов пока нет",
+        loading: "Загрузка README…",
+        statsError: "Не удалось загрузить данные репозитория.",
+        language: "Язык",
+        locale: "ru-RU",
+        alert: { NOTE: "Примечание", IMPORTANT: "Важно", WARNING: "Предупреждение", TIP: "Совет", CAUTION: "Осторожно" },
+        structure: (branch, count) => `В README.md ветки «${branch}» заголовков второго уровня: ${count}. Страница ждёт пять, в таком порядке: возможности, инструкция, сравнение, Cybershoke, Coming Soon. Дальнейшие блоки останутся пустыми, пока этих заголовков нет.`
+      }
+    };
+
+    const FALLBACK_TITLE = "flobb's turnbinds";
+    const FALLBACK_SUBTITLE = "Turnbinds with customizable turnspeeds for CS2/CSGO";
+
+    const state = {
+      lang: "en",
+      branchNames: null,
+      branchesOk: false,
+      release: undefined,
+      pushedAt: null,
+      defaultBranch: "main",
+      req: 0
+    };
+
+    function repoPath() {
+      return encodeURIComponent(CONFIG.owner) + "/" + encodeURIComponent(CONFIG.repo);
+    }
+
+    function githubRepo() {
+      return "https://github.com/" + CONFIG.owner + "/" + CONFIG.repo;
+    }
+
+    function readmeUrl(branch) {
+      return "https://raw.githubusercontent.com/" + repoPath() + "/" + encodeURIComponent(branch) + "/README.md";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/"/g, "&quot;");
+    }
+
+    function sanitizeUrl(url) {
+      const clean = String(url || "").trim();
+      if (/^https?:\/\//i.test(clean)) return clean;
+      return "";
+    }
+
+    function tagAttr(tag, name) {
+      const match = tag.match(new RegExp(name + "\\s*=\\s*(\"([^\"]*)\"|'([^']*)')", "i"));
+      return match ? (match[2] != null ? match[2] : match[3]) : "";
+    }
+
+    function sanitizeImg(tag) {
+      const src = sanitizeUrl(tagAttr(tag, "src"));
+      if (!src) return "";
+      const alt = tagAttr(tag, "alt");
+      return '<img src="' + escapeAttr(src) + '" alt="' + escapeAttr(alt) + '" loading="lazy">';
+    }
+
+    /* Sternchen werden zu fett/kursiv. Unterstriche bleiben Zeichen,
+       damit cl_yawspeed und Dateipfade nicht zerrissen werden.
+       Erlaubt aus der README: <ins>, <img>, `code`, [Text](https://...). */
+    function formatInline(raw) {
+      const slots = [];
+      const keep = (html) => {
+        slots.push(html);
+        return "\u0000" + (slots.length - 1) + "\u0000";
+      };
+
+      let text = String(raw);
+      text = text.replace(/<img\b[^>]*\/?>/gi, (tag) => keep(sanitizeImg(tag)));
+      text = text.replace(/<\/?ins>/gi, (tag) => keep(tag.charAt(1) === "/" ? "</ins>" : "<ins>"));
+      text = text.replace(/`([^`]+)`/g, (_, code) => keep("<code>" + escapeHtml(code) + "</code>"));
+      text = text.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (whole, label, url) => {
+        const safe = sanitizeUrl(url);
+        if (!safe) return whole;
+        return keep('<a href="' + escapeAttr(safe) + '" target="_blank" rel="noopener">' + formatInline(label) + "</a>");
+      });
+      text = escapeHtml(text);
+      text = text.replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>");
+      text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      text = text.replace(/(^|[^*])\*([^*]+)\*/g, (_, lead, body) => lead + "<em>" + body + "</em>");
+      text = text.replace(/\u0000(\d+)\u0000/g, (_, index) => slots[Number(index)]);
+      return text;
+    }
+
+    function formatLines(lines) {
+      let html = "";
+      lines.forEach((line, index) => {
+        const breakAfter = /[ \t]{2}$/.test(line);
+        html += formatInline(line.trim());
+        if (index < lines.length - 1) html += breakAfter ? "<br>" : " ";
+      });
+      return html;
+    }
+
+    function isBlockStart(line) {
+      const trimmed = line.trim();
+      return /^#{1,6}\s+\S/.test(trimmed)
+        || /^>\s?/.test(trimmed)
+        || /^[-*]\s+\S/.test(trimmed)
+        || /^\d+\.\s+\S/.test(trimmed)
+        || /^<img\b/i.test(trimmed)
+        || /^!\[[^\]]*\]\([^)]+\)\s*$/.test(trimmed)
+        || trimmed.startsWith("```")
+        || /^---+$/.test(trimmed);
+    }
+
+    function parseBlocks(markdown) {
+      const lines = String(markdown).replace(/^\uFEFF/, "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+      const blocks = [];
+      let index = 0;
+
+      while (index < lines.length) {
+        const trimmed = lines[index].trim();
+        if (trimmed === "") {
+          index += 1;
+          continue;
+        }
+
+        const heading = trimmed.match(/^(#{1,6})\s+(.+)$/);
+        if (heading) {
+          blocks.push({ type: "heading", level: heading[1].length, text: heading[2].trim() });
+          index += 1;
+          continue;
+        }
+
+        if (trimmed.startsWith("```")) {
+          const code = [];
+          index += 1;
+          while (index < lines.length && !lines[index].trim().startsWith("```")) {
+            code.push(lines[index]);
+            index += 1;
+          }
+          if (index < lines.length) index += 1;
+          blocks.push({ type: "code", text: code.join("\n") });
+          continue;
+        }
+
+        if (/^---+$/.test(trimmed)) {
+          blocks.push({ type: "hr" });
+          index += 1;
+          continue;
+        }
+
+        if (/^<img\b/i.test(trimmed)) {
+          const html = sanitizeImg(trimmed);
+          if (html) blocks.push({ type: "img", html: html });
+          index += 1;
+          continue;
+        }
+
+        const mdImage = trimmed.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
+        if (mdImage && sanitizeUrl(mdImage[2])) {
+          blocks.push({
+            type: "img",
+            html: '<img src="' + escapeAttr(sanitizeUrl(mdImage[2])) + '" alt="' + escapeAttr(mdImage[1]) + '" loading="lazy">'
+          });
+          index += 1;
+          continue;
+        }
+
+        if (/^>\s?/.test(trimmed)) {
+          const quoted = [];
+          while (index < lines.length && /^>\s?/.test(lines[index].trim())) {
+            quoted.push(lines[index].trim().replace(/^>\s?/, ""));
+            index += 1;
+          }
+          const marker = quoted[0].match(/^\[!(NOTE|IMPORTANT|WARNING|TIP|CAUTION)\](?:\s+([\s\S]*))?$/i);
+          if (marker) {
+            const body = [];
+            if (marker[2] && marker[2].trim()) body.push(marker[2]);
+            body.push(...quoted.slice(1));
+            blocks.push({ type: "alert", kind: marker[1].toUpperCase(), lines: body.filter((line) => line.trim() !== "") });
+          } else {
+            blocks.push({ type: "quote", lines: quoted });
+          }
+          continue;
+        }
+
+        if (/^[-*]\s+\S/.test(trimmed) || /^\d+\.\s+\S/.test(trimmed)) {
+          const ordered = /^\d+\.\s+\S/.test(trimmed);
+          const items = [];
+          while (index < lines.length && (ordered ? /^\d+\.\s+\S/.test(lines[index].trim()) : /^[-*]\s+\S/.test(lines[index].trim()))) {
+            let item = lines[index].trim().replace(ordered ? /^\d+\.\s+/ : /^[-*]\s+/, "");
+            index += 1;
+            while (index < lines.length && /^[ \t]{2,}\S/.test(lines[index]) && !isBlockStart(lines[index].trim())) {
+              item += " " + lines[index].trim();
+              index += 1;
+            }
+            items.push(item);
+          }
+          blocks.push({ type: ordered ? "ol" : "ul", items: items });
+          continue;
+        }
+
+        const paragraph = [];
+        while (index < lines.length && lines[index].trim() !== "" && !isBlockStart(lines[index])) {
+          paragraph.push(lines[index]);
+          index += 1;
+        }
+        blocks.push({ type: "p", lines: paragraph });
+      }
+
+      return blocks;
+    }
+
+    function structureReadme(blocks) {
+      const h1 = [];
+      const intro = [];
+      const sections = [];
+      let section = null;
+      let subsection = null;
+
+      blocks.forEach((block) => {
+        if (block.type === "heading" && block.level === 1) {
+          h1.push(block.text);
+          subsection = null;
+          return;
+        }
+        if (block.type === "heading" && block.level === 2) {
+          section = { title: block.text, lead: [], subsections: [] };
+          sections.push(section);
+          subsection = null;
+          return;
+        }
+        if (block.type === "heading" && block.level === 3 && section) {
+          subsection = { title: block.text, blocks: [] };
+          section.subsections.push(subsection);
+          return;
+        }
+        if (block.type === "heading" && block.level > 3 && section) {
+          const target = subsection ? subsection.blocks : section.lead;
+          target.push({ type: "p", lines: ["**" + block.text + "**"] });
+          return;
+        }
+        if (!section) intro.push(block);
+        else if (subsection) subsection.blocks.push(block);
+        else section.lead.push(block);
+      });
+
+      return { h1: h1, intro: intro, sections: sections };
+    }
+
+    function renderBlock(block, options) {
+      if (block.type === "p") return "<p>" + formatLines(block.lines) + "</p>";
+      if (block.type === "ul") {
+        const cls = options.soon ? ' class="soon"' : "";
+        return "<ul" + cls + ">" + block.items.map((item) => "<li>" + formatInline(item) + "</li>").join("") + "</ul>";
+      }
+      if (block.type === "ol") {
+        if (options.steps) {
+          return '<ol class="steps">' + block.items.map((item, index) => {
+            return '<li><span class="step-n">' + (index + 1) + "</span><div>" + formatInline(item) + "</div></li>";
+          }).join("") + "</ol>";
+        }
+        return "<ol>" + block.items.map((item) => "<li>" + formatInline(item) + "</li>").join("") + "</ol>";
+      }
+      if (block.type === "alert") {
+        const label = (UI[state.lang].alert && UI[state.lang].alert[block.kind]) || block.kind;
+        return '<aside class="alert alert-' + block.kind.toLowerCase() + '"><p class="alert-k">' + escapeHtml(label) + "</p><p>" + formatLines(block.lines) + "</p></aside>";
+      }
+      if (block.type === "img") return '<figure class="' + (options.banner ? "banner" : "shot") + '">' + block.html + "</figure>";
+      if (block.type === "quote") return "<blockquote><p>" + formatLines(block.lines) + "</p></blockquote>";
+      if (block.type === "code") return "<pre><code>" + escapeHtml(block.text) + "</code></pre>";
+      if (block.type === "hr") return "<hr>";
+      if (block.type === "heading") {
+        const level = Math.min(block.level, 6);
+        return "<h" + level + ">" + formatInline(block.text) + "</h" + level + ">";
+      }
+      return "";
+    }
+
+    function renderBlocks(blocks, options) {
+      return blocks.map((block) => renderBlock(block, options || {})).join("");
+    }
+
+    function hideReadme() {
+      ["features", "howto", "compare", "thanks", "soon"].forEach((id) => {
+        const el = document.getElementById(id);
+        el.hidden = true;
+        el.innerHTML = "";
+      });
+      document.getElementById("extra").innerHTML = "";
+      document.getElementById("structure-note").hidden = true;
+    }
+
+    function renderReadme(markdown) {
+      const doc = structureReadme(parseBlocks(markdown));
+      document.getElementById("page-title").textContent = doc.h1[0] || FALLBACK_TITLE;
+      document.getElementById("page-subtitle").textContent = doc.h1[1] || FALLBACK_SUBTITLE;
+      document.title = doc.h1[0] || FALLBACK_TITLE;
+      document.getElementById("intro").innerHTML = renderBlocks(doc.intro);
+      document.getElementById("readme-error").hidden = true;
+
+      const sections = doc.sections;
+      const note = document.getElementById("structure-note");
+      if (sections.length < 5) {
+        const branch = CONFIG.languages[state.lang].branch;
+        note.hidden = false;
+        note.textContent = UI[state.lang].structure(branch, sections.length);
+      } else {
+        note.hidden = true;
+      }
+
+      fillSection("features", sections[0], (section) => {
+        const cards = section.subsections.map((sub) => {
+          return '<article class="card"><h3>' + formatInline(sub.title) + "</h3>" + renderBlocks(sub.blocks) + "</article>";
+        }).join("");
+        return "<h2>" + formatInline(section.title) + "</h2>" + renderBlocks(section.lead) + '<div class="cards">' + cards + "</div>";
+      });
+
+      fillSection("howto", sections[1], (section) => {
+        return "<h2>" + formatInline(section.title) + "</h2>"
+          + renderBlocks(section.lead, { steps: true })
+          + section.subsections.map((sub) => "<h3>" + formatInline(sub.title) + "</h3>" + renderBlocks(sub.blocks, { steps: true })).join("");
+      });
+
+      fillSection("compare", sections[2], (section) => {
+        const columns = section.subsections.slice(0, 2).map((sub, index) => {
+          const side = index === 0 ? "is-pro" : "is-con";
+          return '<article class="compare-col ' + side + '"><h3>' + formatInline(sub.title) + "</h3>" + renderBlocks(sub.blocks) + "</article>";
+        }).join("");
+        const more = section.subsections.slice(2).map((sub) => {
+          return "<h3>" + formatInline(sub.title) + "</h3>" + renderBlocks(sub.blocks);
+        }).join("");
+        return "<h2>" + formatInline(section.title) + "</h2>" + renderBlocks(section.lead) + '<div class="compare">' + columns + "</div>" + more;
+      });
+
+      fillSection("thanks", sections[3], (section) => simpleSection(section, { banner: true }));
+      fillSection("soon", sections[4], (section) => simpleSection(section, { soon: true }));
+
+      document.getElementById("extra").innerHTML = sections.slice(5).map((section) => {
+        return '<section class="readme-section extra-block">' + simpleSection(section, {}) + "</section>";
+      }).join("");
+    }
+
+    function simpleSection(section, options) {
+      const subs = section.subsections.map((sub) => {
+        return "<h3>" + formatInline(sub.title) + "</h3>" + renderBlocks(sub.blocks, options);
+      }).join("");
+      return "<h2>" + formatInline(section.title) + "</h2>" + renderBlocks(section.lead, options) + subs;
+    }
+
+    function fillSection(id, section, build) {
+      const el = document.getElementById(id);
+      if (!section) {
+        el.hidden = true;
+        el.innerHTML = "";
+        return;
+      }
+      el.hidden = false;
+      el.innerHTML = build(section);
+    }
+
+    function errorCopy(kind, branch, detail) {
+      const safeBranch = escapeHtml(branch);
+      const url = escapeHtml(readmeUrl(branch));
+      const status = escapeHtml(detail || "");
+      const fileNote = location.protocol === "file:" ? fileProtocolNote(state.lang) : "";
+      const text = {
+        en: {
+          branch: "The English version could not be loaded. The branch \"" + safeBranch + "\" does not exist in " + escapeHtml(CONFIG.owner + "/" + CONFIG.repo) + ". Create that branch and put a README.md file in it. If the branch should have another name, change languages.en.branch in this HTML file.",
+          file: "The English version could not be loaded. The branch \"" + safeBranch + "\" exists, but the file README.md is missing in that branch. Add a file with exactly this name: README.md. Address that was requested: " + url,
+          empty: "The English version could not be loaded. The branch \"" + safeBranch + "\" has a README.md file, but that file is empty.",
+          network: "The English version could not be loaded. The request to GitHub failed" + (status ? " (" + status + ")" : "") + ". That happens without a connection, or when GitHub's API limit is reached. Address: " + url
+        },
+        de: {
+          branch: "Die deutsche Fassung konnte nicht geladen werden. Im Repository " + escapeHtml(CONFIG.owner + "/" + CONFIG.repo) + " fehlt der Branch „" + safeBranch + "“. Diesen Branch gibt es noch nicht. Lege ihn an und lege eine README.md hinein. Wenn der Branch anders heißen soll, ändere in dieser Datei languages.de.branch.",
+          file: "Die deutsche Fassung konnte nicht geladen werden. Der Branch „" + safeBranch + "“ existiert, aber darin fehlt die Datei README.md. Lege im Branch „" + safeBranch + "“ eine Datei mit genau diesem Namen an: README.md. Angefragte Adresse: " + url,
+          empty: "Die deutsche Fassung konnte nicht geladen werden. Im Branch „" + safeBranch + "“ gibt es eine README.md, aber die Datei ist leer.",
+          network: "Die deutsche Fassung konnte nicht geladen werden. Die Anfrage an GitHub ist fehlgeschlagen" + (status ? " (" + status + ")" : "") + ". Das passiert ohne Internetverbindung oder wenn das API-Limit von GitHub erreicht ist. Adresse: " + url
+        },
+        ru: {
+          branch: "Русскую версию не удалось загрузить. В репозитории " + escapeHtml(CONFIG.owner + "/" + CONFIG.repo) + " нет ветки «" + safeBranch + "». Такой ветки ещё нет. Создай её и положи в неё файл README.md. Если ветка должна называться иначе, измени в этом файле languages.ru.branch.",
+          file: "Русскую версию не удалось загрузить. Ветка «" + safeBranch + "» есть, но в ней нет файла README.md. Добавь в ветку «" + safeBranch + "» файл с точно таким именем: README.md. Запрошенный адрес: " + url,
+          empty: "Русскую версию не удалось загрузить. В ветке «" + safeBranch + "» файл README.md есть, но он пустой.",
+          network: "Русскую версию не удалось загрузить. Запрос к GitHub не удался" + (status ? " (" + status + ")" : "") + ". Так бывает без интернета или когда исчерпан лимит API GitHub. Адрес: " + url
+        }
+      };
+      return "<p>" + text[state.lang][kind] + "</p>" + fileNote;
+    }
+
+    function fileProtocolNote(lang) {
+      const notes = {
+        en: "This page was opened as a local file (the address starts with file://). The browser then blocks loading the README from GitHub. Start a local web server in this folder, or open the GitHub Pages address.",
+        de: "Diese Seite wurde als lokale Datei geöffnet (die Adresse beginnt mit file://). Der Browser blockiert dann das Laden der README von GitHub. Starte im Ordner dieser Datei einen lokalen Webserver oder öffne die Adresse der GitHub Page.",
+        ru: "Страница открыта как локальный файл (адрес начинается с file://). Браузер в этом случае блокирует загрузку README с GitHub. Запусти локальный веб-сервер в папке этого файла или открой адрес GitHub Pages."
+      };
+      return "<p>" + notes[lang] + "</p>";
+    }
+
+    function showReadmeError(kind, branch, detail) {
+      hideReadme();
+      document.getElementById("intro").innerHTML = "";
+      document.getElementById("page-title").textContent = FALLBACK_TITLE;
+      document.getElementById("page-subtitle").textContent = "";
+      document.title = FALLBACK_TITLE;
+      const box = document.getElementById("readme-error");
+      box.hidden = false;
+      box.innerHTML = errorCopy(kind, branch, detail);
+    }
+
+    function applyChrome() {
+      const ui = UI[state.lang];
+      document.documentElement.lang = state.lang;
+      document.getElementById("about").textContent = ABOUT[state.lang];
+      document.querySelector('meta[name="description"]').setAttribute("content", ABOUT[state.lang]);
+      document.getElementById("lang-switch").setAttribute("aria-label", ui.language);
+      document.getElementById("label-stars").textContent = ui.stars;
+      document.getElementById("label-branches").textContent = ui.branches;
+      document.getElementById("label-release").textContent = ui.release;
+      document.getElementById("label-updated").textContent = ui.updated;
+      document.querySelectorAll(".flag-btn").forEach((button) => {
+        const on = button.dataset.lang === state.lang;
+        button.classList.toggle("is-active", on);
+        button.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      const preview = document.querySelector("#preview-slot svg");
+      if (preview) {
+        const labels = {
+          en: "Turnbind preview placeholder",
+          de: "Platzhalter für die Turnbind-Vorschau",
+          ru: "Заглушка превью turnbind"
+        };
+        preview.setAttribute("aria-label", labels[state.lang]);
+      }
+      paintStats();
+    }
+
+    function paintStats() {
+      const ui = UI[state.lang];
+      const stars = document.getElementById("stars-value");
+      const release = document.getElementById("release-value");
+      const updated = document.getElementById("updated-value");
+      const branchList = document.getElementById("branch-list");
+      const releaseLink = document.getElementById("stat-release");
+      const updatedLink = document.getElementById("stat-updated");
+
+      if (!state.branchesOk && state.branchNames === null && state.pushedAt === null && state.release === undefined) {
+        return;
+      }
+
+      if (typeof state.stars === "number") {
+        stars.textContent = new Intl.NumberFormat(ui.locale).format(state.stars);
+      } else {
+        stars.textContent = "—";
+      }
+
+      if (state.branchesOk) {
+        branchList.innerHTML = state.branchNames.map((name) => {
+          const href = githubRepo() + "/tree/" + encodeURIComponent(name);
+          return '<a href="' + escapeAttr(href) + '">' + escapeHtml(name) + "</a>";
+        }).join("");
+      } else {
+        branchList.textContent = ui.statsError;
+      }
+
+      if (state.release) {
+        release.textContent = state.release.tag;
+        releaseLink.href = state.release.url;
+      } else if (state.release === null) {
+        release.textContent = ui.noRelease;
+        releaseLink.href = githubRepo() + "/releases";
+      }
+
+      if (state.pushedAt) {
+        const formatted = new Intl.DateTimeFormat(ui.locale, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(new Date(state.pushedAt));
+        updated.textContent = formatted;
+        updated.setAttribute("datetime", state.pushedAt);
+        updatedLink.href = githubRepo() + "/commits/" + encodeURIComponent(state.defaultBranch);
+      } else if (state.statsFailed) {
+        updated.textContent = "—";
+      }
+    }
+
+    let statsPromise = null;
+
+    function loadStats() {
+      if (!statsPromise) statsPromise = fetchStats();
+      return statsPromise;
+    }
+
+    async function fetchStats() {
+      const live = document.getElementById("live");
+      const headers = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+      try {
+        const [repoRes, branchRes, releaseRes] = await Promise.all([
+          fetch("https://api.github.com/repos/" + repoPath(), { headers: headers, cache: "no-store" }),
+          fetch("https://api.github.com/repos/" + repoPath() + "/branches?per_page=100", { headers: headers, cache: "no-store" }),
+          fetch("https://api.github.com/repos/" + repoPath() + "/releases/latest", { headers: headers, cache: "no-store" })
+        ]);
+
+        if (repoRes.ok) {
+          const repo = await repoRes.json();
+          state.stars = repo.stargazers_count;
+          state.pushedAt = repo.pushed_at;
+          state.defaultBranch = repo.default_branch || "main";
+        } else {
+          state.statsFailed = true;
+        }
+
+        if (branchRes.ok) {
+          const branches = await branchRes.json();
+          state.branchNames = branches.map((branch) => branch.name).sort((a, b) => {
+            if (a === state.defaultBranch) return -1;
+            if (b === state.defaultBranch) return 1;
+            return a.localeCompare(b);
+          });
+          state.branchesOk = true;
+        } else {
+          state.branchesOk = false;
+          state.branchNames = [];
+          state.statsFailed = true;
+        }
+
+        if (releaseRes.ok) {
+          const release = await releaseRes.json();
+          state.release = { tag: release.tag_name, url: release.html_url };
+        } else if (releaseRes.status === 404) {
+          state.release = null;
+        } else {
+          state.release = null;
+          state.statsFailed = true;
+        }
+      } catch (err) {
+        state.statsFailed = true;
+        state.branchesOk = false;
+        state.branchNames = [];
+        state.release = null;
+      }
+      live.setAttribute("aria-busy", "false");
+      paintStats();
+    }
+
+    async function loadReadme(lang) {
+      const requestId = ++state.req;
+      const branch = CONFIG.languages[lang].branch;
+      document.getElementById("intro").innerHTML = '<p class="loading">' + escapeHtml(UI[lang].loading) + "</p>";
+      document.getElementById("readme-error").hidden = true;
+
+      let response;
+      try {
+        response = await fetch(readmeUrl(branch) + "?cb=" + Date.now(), { cache: "no-store" });
+      } catch (err) {
+        await loadStats();
+        if (requestId !== state.req) return;
+        showReadmeError("network", branch, err && err.message ? err.message : "");
+        return;
+      }
+
+      await loadStats();
+      if (requestId !== state.req) return;
+
+      if (state.branchesOk && state.branchNames.indexOf(branch) === -1) {
+        showReadmeError("branch", branch);
+        return;
+      }
+      if (requestId !== state.req) return;
+
+      if (response.status === 404) {
+        showReadmeError(state.branchesOk ? "file" : "network", branch, state.branchesOk ? "" : "HTTP 404");
+        if (!state.branchesOk) {
+          const box = document.getElementById("readme-error");
+          const extra = {
+            en: "The branch list could not be loaded either, so this can mean two different things: the branch \"" + branch + "\" is missing, or the branch exists and the file README.md is missing.",
+            de: "Die Branch-Liste konnte zusätzlich nicht geladen werden. Deshalb kann zweierlei fehlen: der Branch „" + branch + "“ oder, falls der Branch existiert, die Datei README.md darin.",
+            ru: "Список веток тоже не загрузился. Поэтому неясно, чего именно нет: ветки «" + branch + "» или, если ветка есть, файла README.md в ней."
+          };
+          box.insertAdjacentHTML("beforeend", "<p>" + escapeHtml(extra[lang]) + "</p>");
+        }
+        return;
+      }
+
+      if (!response.ok) {
+        showReadmeError("network", branch, "HTTP " + response.status);
+        return;
+      }
+
+      const markdown = await response.text();
+      if (requestId !== state.req) return;
+      if (!markdown.trim()) {
+        showReadmeError("empty", branch);
+        return;
+      }
+      renderReadme(markdown);
+    }
+
+    function initialLang() {
+      const fromHash = location.hash.replace(/^#/, "");
+      if (CONFIG.languages[fromHash]) return fromHash;
+      return "en";
+    }
+
+    function setLang(lang, options) {
+      if (!CONFIG.languages[lang]) lang = "en";
+      state.lang = lang;
+      if (!options || !options.fromHash) {
+        const base = location.pathname + location.search;
+        const url = lang === "en" ? (base || "./") : base + "#" + lang;
+        history.pushState(null, "", url);
+      }
+      applyChrome();
+      loadReadme(lang);
+    }
+
+    function init() {
+      document.getElementById("lang-switch").addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-lang]");
+        if (!button || button.dataset.lang === state.lang) return;
+        setLang(button.dataset.lang);
+      });
+      window.addEventListener("hashchange", () => {
+        const lang = initialLang();
+        if (lang !== state.lang) setLang(lang, { fromHash: true });
+      });
+      applyChrome();
+      setLang(initialLang(), { fromHash: true });
+    }
+
+    if (typeof document !== "undefined") init();
+  </script>
+</body>
+</html>
