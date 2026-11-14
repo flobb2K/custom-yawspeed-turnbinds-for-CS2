@@ -12,8 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Rajdhani:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     /* ************************************************************
-       HIER BEARBEITEN: Farben der Seite.
-       --gold ist auch die Rahmenfarbe der Sprachflaggen.
+        Farben der Seite.
        ************************************************************ */
     :root {
       --bg: #101410;
@@ -409,34 +408,6 @@
   </style>
 </head>
 <body>
-  <!--
-    ============================================================
-    KURZANLEITUNG (diese Kommentare sieht man im Seitenquelltext)
-
-    Diese eine Datei ist die GitHub Page. Texte der README werden
-    NICHT hier reinkopiert. Die Seite holt sie beim Öffnen live
-    von GitHub. Die englische README bleibt dadurch 1:1 die Datei
-    im Branch "main".
-
-    So kommt die Seite online:
-    1. index.html in das Repository legen.
-       Entweder in den Root von "main" oder in einen Ordner /docs.
-    2. Auf GitHub: Settings → Pages → Branch wählen
-       (main, Ordner /root oder /docs) → Save.
-    3. Die Sprach-Branches "german" und "russian" brauchen diese
-       HTML-Datei nicht. Dort liegt später nur eine eigene README.md.
-       Diese Seite liest sie von hier aus.
-
-    Direkt als Datei öffnen (Doppelklick, Adresse beginnt mit file://)
-    funktioniert nicht: der Browser blockiert dann das Laden von GitHub.
-    Lokal testen: im Ordner dieser Datei "python -m http.server" starten
-    und http://localhost:8000 öffnen.
-
-    Was du später hier selbst änderst, ist mit "HIER BEARBEITEN" markiert.
-    Alles andere pflegst du in der README.md des jeweiligen Branches.
-    ============================================================
-  -->
-
   <div class="wrap">
     <header>
       <div class="title-row">
@@ -494,14 +465,7 @@
 
       <!--
         ************************************************************
-        HIER BEARBEITEN: Platzhalterbild.
-        Ersetze das komplette <svg class="preview-art">...</svg>
-        durch ein Bild, zum Beispiel:
-
-          <img class="preview-art" src="turnbinds-preview.gif" alt="Turnbinds Vorschau">
-
-        Die GIF-Datei muss dann neben index.html im Repository liegen
-        (oder src ist eine volle https-Adresse).
+        Demo GIF
         ************************************************************
       -->
       <aside class="intro-media" id="preview-slot">
@@ -512,8 +476,7 @@
     <div id="readme-error" class="load-error" hidden></div>
 
     <!--
-      Live-Zeile. Die Zahlen kommen von der GitHub-API, die Beschriftung
-      aus UI weiter unten (Sterne, Branches, Release, Änderungsdatum).
+      Live-Zeile. (Sterne, Branches, Release, Änderungsdatum).
     -->
     <section class="live" id="live" aria-busy="true">
       <a class="stat" id="stat-stars" href="https://github.com/flobb2K/custom-turnbinds-config/stargazers">
@@ -537,27 +500,6 @@
     <!--
       ============================================================
       AB HIER KOMMT DER INHALT AUS DER README.md
-
-      Die Seite zählt die Überschriften der Ebene 2 (Zeilen mit "##"),
-      nicht den englischen Wortlaut. Dadurch funktioniert dieselbe
-      Anordnung auch in der deutschen und russischen README.
-
-      Pflicht-Reihenfolge in JEDER Sprach-README:
-        1. erste ##   → Kärtchen (jedes ### darunter wird ein Kärtchen)
-        2. zweite ##  → Schrittreihenfolge (nummerierte Liste + Bild)
-        3. dritte ##  → Vergleich nebeneinander (erstes ### links, zweites ### rechts)
-        4. vierte ##  → Cybershoke-Abschnitt
-        5. fünfte ##  → Coming Soon
-      Alles nach der fünften ##-Überschrift wird darunter angehängt,
-      damit spätere Abschnitte nicht verschwinden.
-
-      Die erste und zweite "#"-Zeile (Ebene 1) sind Seitentitel
-      und Untertitel. Der Text dazwischen und vor der ersten "##"
-      ist der Einleitungstext rechts vom Platzhalterbild.
-
-      Überschriften, Bilder, Listen und Hinweise ([!NOTE], [!IMPORTANT],
-      [!WARNING]) werden mit ausgegeben. Du änderst sie in der README,
-      nicht hier.
       ============================================================
     -->
     <p id="structure-note" class="structure-note" hidden></p>
@@ -575,9 +517,8 @@
 
   <script>
     /* ************************************************************
-       HIER BEARBEITEN: Repository und Sprach-Branches.
-       branch ist der Git-Branch, dessen README.md geladen wird.
-       Englisch = main. Deutsch = german. Russisch = russian.
+        Branch Names for Languages
+        Englisch = main. Deutsch = german. Russisch = russian.
        ************************************************************ */
     const CONFIG = {
       owner: "flobb2K",
@@ -590,10 +531,7 @@
     };
 
     /* ************************************************************
-       HIER BEARBEITEN: About-Text.
-       Der steht absichtlich fest in dieser Datei, weil die
-       Repository-Beschreibung nicht aus der README kommt.
-       Englisch ist der Originalsatz und darf 1:1 so bleiben.
+        About-Text.
        ************************************************************ */
     const ABOUT = {
       en: "The first and so far only source on the internet proving customizable turnbinds are possible in Counter-Strike 2 without using external software.",
@@ -602,8 +540,7 @@
     };
 
     /* ************************************************************
-       HIER BEARBEITEN: Beschriftungen, die nicht in der README stehen
-       (Live-Zeile, Ladehinweis, Namen der GitHub-Hinweise).
+       Beschriftungen, die nicht in der README stehen
        ************************************************************ */
     const UI = {
       en: {
